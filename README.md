@@ -2,22 +2,25 @@
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-CBZ Editor is a command-line tool to process and manage CBZ (Comic Book Zip) files. It allows you to extract, rename, and organize images from CBZ files, while also generating `ComicInfo.xml` metadata. The tool simplifies working with comic book archives, making it easy to structure volumes and chapters.
+CBZ Editor is a powerful and user-friendly command-line tool designed for processing and managing CBZ (Comic Book Zip) files. It offers a seamless way to extract, rename, and organize images from CBZ files, while also generating the necessary `ComicInfo.xml` metadata for comic book readers. Whether you're working with single issues or entire volumes, CBZ Editor simplifies your workflow, making it easy to manage and structure your comic archives.
 
 ## Features
 
-- **Process CBZ Files**: Extract and rename images from CBZ archives.
-- **Interactive Mode**: The tool guides you through setting up the necessary configurations.
-- **Automatic Metadata Creation**: Generates a `ComicInfo.xml` file with volume and series information.
-- **Directory Management**: Automatically creates necessary directories like `cbz` and `temp`.
-- **Command-Line Interface**: Easy-to-use CLI powered by `click`.
+- **Process CBZ Files**: Automatically extract, rename, and organize images from CBZ archives.
+- **Custom Metadata Creation**: Generate a `ComicInfo.xml` file containing detailed information about the volume, series, writer, and more.
+- **Cover Image Handling**: Optionally replace or prepend `title.jpg` as the cover image.
+- **Additional Image Support**: Includes handling for extra images such as `p(n).jpg` before or after CBZ file extraction.
+- **Interactive and Command-Line Modes**: Run interactively or provide all commands through a simple CLI.
+- **Directory Management**: Automatically creates and manages necessary directories (`cbz`, `temp`).
+- **Combine Processed Images into CBZ**: Combine extracted images into a new CBZ archive after processing.
+- **Optional File Cleanup**: Move original files to a temporary directory after processing, keeping your workspace clean.
 
 ## Installation
 
-You can install the CBZ Editor by cloning this repository and using `pip`:
+You can install CBZ Editor by cloning the repository and installing it using `pip`:
 
 ```bash
-git clone https://github.com/SchmidtiTv/cbz_editor/cbz_editor
+git clone https://github.com/SchmidtiTv/cbz_editor
 cd cbz_editor
 pip install -e .
 ```
@@ -25,32 +28,33 @@ pip install -e .
 ### Requirements
 
 - Python 3.6 or higher
-- The following Python packages (automatically installed with `pip`):
+- Required Python packages (automatically installed with `pip`):
   - `click`
+  - `tqdm`
 
 ## Usage
 
-Once installed, you can use the `cbz_editor` command. The tool provides two main commands: `init` and `process`.
+CBZ Editor provides a simple command-line interface (CLI) for initializing and processing CBZ files. The primary commands are `init` and `process`.
 
 ### 1. Initialize the CBZ Editor
 
-Before processing CBZ files, you need to run the `init` command to set up the project:
+Before processing any CBZ files, you need to initialize the project using the `init` command:
 
 ```bash
 cbz_editor init
 ```
 
 - **What it does**:
-  - Creates the necessary `cbz` and `temp` directories if they don't exist.
-  - Prompts for the series name and writer name (optional).
-  - Stores this information in an XML file for later use.
+  - Creates the necessary `cbz` and `temp` directories (if they don’t exist).
+  - Prompts you for the series name and writer name (optional).
+  - Saves this information in an XML file (`config.xml`) for future use.
 
 ### 2. Process CBZ Files
 
-After initializing, you can process a CBZ volume using the `process` command. This command uses the CBZ files stored in the `cbz` directory and renames them sequentially.
+After initialization, you can process CBZ files with the `process` command. This extracts the images from the CBZ files, renames them sequentially, and creates a new CBZ file along with a `ComicInfo.xml`.
 
 ```bash
-cbz_editor process <volume_number>
+cbz_editor process <volume_number> [--move-originals]
 ```
 
 - **Example**:
@@ -58,10 +62,15 @@ cbz_editor process <volume_number>
   cbz_editor process 2
   ```
 
+- **Optional Flag**:
+  - `--move-originals`: Move the original CBZ files and images to a temporary directory after processing.
+  
 - **What it does**:
-  - Reads the CBZ files from the `cbz` directory.
-  - Extracts and renames the images.
-  - Creates a `ComicInfo.xml` file with metadata for the processed volume.
+  - Reads and processes all CBZ files in the `cbz` directory.
+  - Extracts images, handles additional images like `title.jpg` or `p(n).jpg`, and renames them.
+  - Generates `ComicInfo.xml` with metadata such as the series name, volume number, page count, and writer.
+  - Optionally combines the processed images into a new CBZ file.
+  - Optionally moves the original files to a temp folder.
 
 ## Example Workflow
 
@@ -69,21 +78,24 @@ cbz_editor process <volume_number>
    ```bash
    cbz_editor init
    ```
-   This will create the `cbz` and `temp` directories and ask for the series name and writer name.
+   This creates the necessary directories and prompts for the series and writer name.
 
-2. **Step 2**: Place your CBZ files inside the `cbz` directory.
+2. **Step 2**: Add your CBZ files to the `cbz` directory.
 
-3. **Step 3**: Process the CBZ files for a specific volume:
+3. **Step 3**: Optionally, add a `title.jpg` and any extra images (`p(n).jpg`) to the `cbz` directory.
+
+4. **Step 4**: Process the CBZ files for a specific volume:
    ```bash
-   cbz_editor process 1
+   cbz_editor process 1 --move-originals
    ```
+   This extracts and renames the images, generates the `ComicInfo.xml`, creates a new combined CBZ, and moves the original files to the `temp` directory.
 
-4. **Step 4**: The tool will extract and rename the images, and the renamed images will be available in the current working directory, along with the `ComicInfo.xml` file.
+5. **Step 5**: Find the renamed images and the `ComicInfo.xml` file in the output directory.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+CBZ Editor is open-source software licensed under the MIT License. See the [LICENSE](LICENSE) file for full details.
 
 ## Contributing
 
-Feel free to open issues or submit pull requests if you find any bugs or have suggestions for new features.
+Contributions are welcome! Feel free to open issues for bugs, suggest new features, or submit pull requests. Your feedback helps make CBZ Editor better for everyone.
