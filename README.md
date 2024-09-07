@@ -15,6 +15,6 @@ CBZ Editor is a command-line tool to process and manage CBZ (Comic Book Zip) fil
 You can install the CBZ Editor by cloning this repository and using `pip`:
 
 ```bash
-git clone https://github.com/yourusername/cbz_editor
+git clone https://github.com/SchmidtiTv/cbz_editor/cbz_editor
 cd cbz_editor
 pip install -e .
