@@ -1,5 +1,7 @@
 # CBZ Editor
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 CBZ Editor is a command-line tool to process and manage CBZ (Comic Book Zip) files. It allows you to extract, rename, and organize images from CBZ files, while also generating `ComicInfo.xml` metadata. The tool simplifies working with comic book archives, making it easy to structure volumes and chapters.
 
 ## Features
