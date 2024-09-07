@@ -104,6 +104,19 @@ def extract_cbz_and_rename_images(cbz_directory: str, output_directory: str, vol
     create_comicinfo_xml(output_directory, f"Volume {volume_number}", series_name, total_page_count, volume_number, writer_name)
     click.echo("Extraction, renaming, and ComicInfo.xml creation completed.")
 
+def load_config() -> tuple[str, str]:
+    """Load the series and writer information from the XML config file."""
+    if not os.path.exists(CONFIG_FILE):
+        raise FileNotFoundError(f"{CONFIG_FILE} not found. Please run 'init' command first.")
+
+    tree = parse(CONFIG_FILE)
+    root = tree.getroot()
+    series_name = root.find('series_name').text
+    writer_name = root.find('writer_name').text
+
+    return series_name, writer_name
+
+
 def rename_images_in_folder(chapter_folder: str, output_directory: str, current_number: int, total_page_count: int) -> tuple[int, int]:
     """Rename images in the given folder."""
     for filename in sorted(os.listdir(chapter_folder)):
