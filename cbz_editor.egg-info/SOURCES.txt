@@ -1,0 +1,8 @@
+cbz_editor.py
+setup.py
+cbz_editor.egg-info/PKG-INFO
+cbz_editor.egg-info/SOURCES.txt
+cbz_editor.egg-info/dependency_links.txt
+cbz_editor.egg-info/entry_points.txt
+cbz_editor.egg-info/requires.txt
+cbz_editor.egg-info/top_level.txt

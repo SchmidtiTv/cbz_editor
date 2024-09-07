@@ -1,0 +1,2 @@
+[console_scripts]
+cbz_editor = cbz_editor:cli
