@@ -6,6 +6,7 @@ setup(
     py_modules=['cbz_editor'],
     install_requires=[
         'click',
+        'tpdm'
     ],
     entry_points='''
         [console_scripts]
