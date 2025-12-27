@@ -52,9 +52,9 @@ def save_config(series_name: str, writer_name: str) -> None:
     writer_element = SubElement(config, 'writer_name')
     writer_element.text = writer_name
 
-    tree = ElementTree(config)
     with open(CONFIG_FILE, 'wb') as f:
-        tree.write(f)
+        f.write(tostring(config, encoding='utf-8', xml_declaration=True))
+
     logging.info(f"Configuration saved to {CONFIG_FILE}")
 
 @cli.command()
