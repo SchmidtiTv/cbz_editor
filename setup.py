@@ -6,11 +6,16 @@ setup(
     packages=find_packages(),
     install_requires=[
         'click',
-        'tqdm'
+        'tqdm',
     ],
     entry_points={
         'console_scripts': [
             'cbz-editor=cbz_editor.cli:cli',
+        ],
+    },
+    extra_requirements={
+        'dev': [
+            'pyinstaller',
         ],
     },
     author='Schmidti',
