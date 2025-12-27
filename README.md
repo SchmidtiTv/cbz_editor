@@ -4,44 +4,67 @@ A CLI tool to batch-rename, organize, and tag CBZ volumes with `ComicInfo.xml` m
 
 ## Quick Start
 
-1. **Install:**
+1. Install:
 ```bash
 git clone https://github.com/SchmidtiTv/cbz_editor
 cd cbz_editor
 pip install -e .
 ```
 
-
-2. **Setup:**
+2. Setup:
 ```bash
 cbz-editor init
 ```
+Creates folders and stores your Series/Writer info in `config.xml`.
 
-
-*Creates folders and stores your Series/Writer info.*
-3. **Run:**
-Put your files in `/cbz` and run:
+3. Run:
+Put chapter `.cbz` files and optional images (e.g., `title.jpg`, `p(n).jpg`) into the `cbz` folder, then:
 ```bash
-cbz-editor process 1 --move-originals
+cbz-editor process 1 --output-dir "Volume-1" --move-originals
 ```
 
-
+- `--output-dir` is where numbered images and the final `Volume_1.cbz` are written.
+- `--move-originals` moves the source `.cbz` and extra images into `temp/Volume_1` after processing.
 
 ---
 
-## Features
+## What it does
 
-* **Sequential Renaming:** Fixes messy filenames (e.g., `001.jpg`, `002.jpg`).
-* **Auto-Metadata:** Generates `ComicInfo.xml` for readers like Kavita or Komga.
-* **Cover Support:** Automatically picks up `title.jpg` as the cover.
-* **Clean Workspace:** Uses a `--move-originals` flag to archive source files to `/temp`.
+- Sequential Renaming: outputs `001.jpg`, `002.jpg`, ...
+- Cover Support: uses `title.jpg` as `001.jpg` when present.
+- Extra Pages: copies any `p(n).jpg` into the sequence before chapters.
+- Auto-Metadata: writes `ComicInfo.xml` (Title, Series, Volume, PageCount, optional Writer).
+- Combined Archive: creates `Volume_X.cbz` containing only numbered images and `ComicInfo.xml`.
+- Safe Archiving: avoids re-adding the output CBZ to itself and supports large volumes (ZIP64).
+
+## Requirements
+
+- Python 3.8+
+- Runtime dependencies are installed via `setup.py`:
+  - `click` (CLI)
+  - `tqdm` (progress bars)
 
 ## Project Structure
 
-* `/cbz`: Drop your raw `.cbz` and images here.
-* `/temp`: Where originals go after processing.
-* `config.xml`: Stores your series metadata.
+```
+cbz_editor/
+  cbz_editor.py          # shim that forwards to the CLI
+  cbz_editor/            # package
+    __init__.py
+    cli.py               # click-based CLI (init, process)
+    config.py            # config.xml read/write
+    processing.py        # extract, rename, bundle, metadata
+    utils.py             # directory helpers/constants
+setup.py                 # packaging & console_script
+README.md
+LICENSE
+```
+
+- Working folders created/used:
+  - `cbz/`   — drop your raw `.cbz` and optional images here
+  - `temp/`  — originals archived after processing when `--move-originals` is used
+  - `config.xml` — stores series metadata
 
 ## License
 
-MIT License © 2024 SchmidtiTv
+MIT License © 2025 Schmidti
