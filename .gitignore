@@ -1,0 +1,13 @@
+.idea/
+*.iml
+
+*.log
+
+temp/
+cbz/
+.venv
+
+*.egg-info/
+*.egg-info
+dist/
+build/

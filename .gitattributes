@@ -1,0 +1,17 @@
+# Default all text to LF like a civilized human
+* text=auto eol=lf
+
+# Binary files stay binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+*.exe binary
+*.dll binary
+
+# If you write Windows batch files (my condolences)
+*.bat text eol=crlf
+*.cmd text eol=crlf
