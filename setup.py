@@ -16,11 +16,12 @@ setup(
     description='A CBZ editor for processing and renaming comic files',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='https://github.com/yourusername/cbz_editor',
+    url='https://github.com/SchmidtiTv/cbz_editor',
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX',
     ],
     python_requires='>=3.6',
 )
