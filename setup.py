@@ -1,17 +1,18 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='cbz_editor',
     version='0.1',
-    py_modules=['cbz_editor'],
+    packages=find_packages(),
     install_requires=[
         'click',
         'tqdm'
     ],
-    entry_points='''
-        [console_scripts]
-        cbz_editor=cbz_editor:cli
-    ''',
+    entry_points={
+        'console_scripts': [
+            'cbz-editor=cbz_editor.cli:cli',
+        ],
+    },
     author='Schmidti',
     description='A CBZ editor for processing and renaming comic files',
     long_description=open('README.md').read(),
