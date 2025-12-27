@@ -2,9 +2,9 @@ import os
 import zipfile
 import shutil
 import logging
+import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element, SubElement, tostring
 import click
-from math import ceil
 from tqdm import tqdm
 
 CONFIG_FILE = 'config.xml'
@@ -71,6 +71,24 @@ def process(volume_number: int, output_dir: str, move_originals: bool) -> None:
 
     extract_cbz_and_rename_images(CBZ_DIR, output_dir, volume_number, series_name, writer_name, move_originals)
 
+
+def load_config() -> tuple[str, str]:
+    """Loads series and writer info from the config file."""
+    if not os.path.exists(CONFIG_FILE):
+        raise FileNotFoundError(f"Configuration file '{CONFIG_FILE}' not found. Please run 'init' first.")
+    print(CONFIG_FILE)
+    tree = ET.parse(CONFIG_FILE)
+    root = tree.getroot()
+
+    # Safely extract text from elements
+    series_element = root.find('series_name')
+    writer_element = root.find('writer_name')
+
+    series_name = series_element.text if (series_element is not None and series_element.text) else ""
+    writer_name = writer_element.text if (writer_element is not None and writer_element.text) else ""
+
+    return series_name, writer_name
+
 def extract_cbz_and_rename_images(cbz_directory: str, output_directory: str, volume_number: int, series_name: str, writer_name: str, move_originals: bool) -> None:
     current_number = 1
     total_page_count = 0
@@ -95,7 +113,6 @@ def extract_cbz_and_rename_images(cbz_directory: str, output_directory: str, vol
         total_page_count += 1
         current_number = i + 1
 
-    # Process CBZ files and rename images
     cbz_files = sorted([f for f in os.listdir(cbz_directory) if f.lower().endswith('.cbz')])
     for cbz_file in tqdm(cbz_files, desc="Processing CBZ files"):
         chapter_folder = os.path.join(output_directory, os.path.splitext(cbz_file)[0])
@@ -106,13 +123,9 @@ def extract_cbz_and_rename_images(cbz_directory: str, output_directory: str, vol
 
         current_number, total_page_count = rename_images_in_folder(chapter_folder, output_directory, current_number, total_page_count)
 
-    # Create ComicInfo.xml
     create_comicinfo_xml(output_directory, f"Volume {volume_number}", series_name, total_page_count, volume_number, writer_name)
-
-    # Combine into CBZ
     create_combined_cbz(output_directory, f"Volume_{volume_number}.cbz")
     
-    # Move original files if requested
     if move_originals:
         move_to_temp_folder(cbz_files, title_jpg_path, p_images, cbz_directory, volume_number)
 
@@ -173,19 +186,16 @@ def move_to_temp_folder(cbz_files: list, title_jpg_path: str, p_images: list, cb
     temp_dir = os.path.join(TEMP_DIR, f"Volume_{volume_number}")
     create_directory(temp_dir)
 
-    # Move CBZ files
     for cbz_file in cbz_files:
         src = os.path.join(cbz_directory, cbz_file)
         dst = os.path.join(temp_dir, cbz_file)
         shutil.move(src, dst)
         logging.info(f"Moved '{cbz_file}' to '{temp_dir}'")
 
-    # Move title.jpg
     if os.path.exists(title_jpg_path):
         shutil.move(title_jpg_path, os.path.join(temp_dir, "title.jpg"))
         logging.info(f"Moved 'title.jpg' to '{temp_dir}'")
 
-    # Move additional p(n).jpg images
     for p_image in p_images:
         shutil.move(os.path.join(cbz_directory, p_image), os.path.join(temp_dir, p_image))
         logging.info(f"Moved '{p_image}' to '{temp_dir}'")
