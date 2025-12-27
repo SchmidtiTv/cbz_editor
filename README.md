@@ -4,7 +4,7 @@ A CLI tool to batch-rename, organize, and tag CBZ volumes with `ComicInfo.xml` m
 
 ## Quick Start
 
-1. Install (editable):
+1. Install:
 ```bash
 git clone https://github.com/SchmidtiTv/cbz_editor
 cd cbz_editor
