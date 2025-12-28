@@ -44,7 +44,8 @@ def save_config(series_name: str, writer_name: str, output_directory_schema: str
     with open(CONFIG_FILE, 'wb') as f:
         f.write(tostring(config, encoding='utf-8', xml_declaration=True))
 
-    logger.info(f"Configuration saved to {CONFIG_FILE}")
+    logger.info(
+        f"Configuration saved to {CONFIG_FILE} with series '{series_name}' and writer '{writer_name}' and output directory '{output_directory_schema}'.")
 
 
 def config_exists() -> None:
