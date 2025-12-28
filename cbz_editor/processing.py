@@ -14,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 def extract_cbz_and_rename_images(cbz_directory: str, output_directory: str, volume_number: int,
                                   series_name: str, writer_name: str, move_originals: bool) -> None:
+    """Extract CBZ files, rename images, and create ComicInfo.xml and combined CBZ."""
+
+    output_directory_folder = output_directory.replace("%d", str(volume_number))
+    output_directory = os.path.join(os.curdir, output_directory_folder)
     current_number = 1
     total_page_count = 0
     create_directory(output_directory)
@@ -72,7 +76,7 @@ def rename_images_in_folder(chapter_folder: str, output_directory: str, current_
 
 
 def create_comicinfo_xml(output_directory: str, volume_title: str, series_name: str, page_count: int,
-                          volume_number: int, writer_name: str) -> None:
+                         volume_number: int, writer_name: str) -> None:
     """Creates a ComicInfo.xml file in the output directory."""
     comic_info = Element("ComicInfo", {
         "xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
