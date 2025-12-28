@@ -33,8 +33,8 @@ cbz-editor build_volume 1 --move-originals
 
 ## What it does
 
-- Sequential Renaming: outputs `001.jpg`, `002.jpg`, ...
-- Cover Support: uses `title.jpg` as `001.jpg` when present.
+- Sequential Renaming: outputs `0001.jpg`, `0002.jpg`, ...
+- Cover Support: uses `title.jpg` as `0001.jpg` when present.
 - Extra Pages: copies any `p(n).jpg` into the sequence before chapters.
 - Auto-Metadata: writes `ComicInfo.xml` (Title, Series, Volume, PageCount, optional Writer).
 - Combined Archive: creates `Volume_X.cbz` containing only numbered images and `ComicInfo.xml`.

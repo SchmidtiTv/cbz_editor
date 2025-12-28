@@ -18,7 +18,7 @@ def extract_and_order_chapters(cbz_directory: str, current_number: int, output_d
         with zipfile.ZipFile(os.path.join(cbz_directory, cbz_file), 'r') as zip_ref:
             zip_ref.extractall(chapter_folder)
 
-        current_number, total_page_count = rename_images_in_folder(chapter_folder, output_directory,
+        current_number, total_page_count, _ = rename_images_in_folder(chapter_folder, output_directory,
                                                                        current_number,
                                                                        total_page_count)
     return cbz_files, total_page_count

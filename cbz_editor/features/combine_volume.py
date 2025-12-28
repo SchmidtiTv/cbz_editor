@@ -38,7 +38,7 @@ class VolumeBuilder:
                                                                            output_directory,
                                                                            total_page_count)
 
-        # Handle additional p(n).jpg images
+        # Handle additional p(n).jpg images and if exist add them in front of the volume after title.jpg
         current_number, p_images, total_page_count = copy_additional_images(self, self.cbz_directory, current_number,
                                                                             output_directory,
                                                                             total_page_count)
