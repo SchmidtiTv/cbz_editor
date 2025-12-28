@@ -1,19 +1,18 @@
-import logging
 import click
 
+from .logger.create_logger import create_logger
+from .features.combine_to_volume import build_volume as run_build_volume
 from .utils import create_directory, CBZ_DIR, TEMP_DIR, check_if_project_initialized
-from .config import save_config, load_config
-from .processing import extract_cbz_and_rename_images
-
-# Setup logging (module-level)
-logging.basicConfig(filename='cbz_editor.log', level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+from .config import save_config, load_config, LOG_FILE
 
 
 @click.group()
-def cli() -> None:
+@click.option('--verbose', is_flag=True, help="Enable verbose output.")
+@click.pass_context
+def cli(ctx, verbose) -> None:
     """CBZ Processor CLI"""
-    pass
+    ctx.ensure_object(dict)
+    ctx.obj['VERBOSE'] = verbose
 
 
 @cli.command()
@@ -65,10 +64,11 @@ def init(series: str, writer: str) -> None:
 
 
 @cli.command()
+@click.pass_context
 @click.argument('volume_number', type=int)
 @click.option('--move-originals', is_flag=True,
               help="Move original files to a temp folder after processing.")
-def build_volume(volume_number: int, move_originals: bool) -> None:
+def build_volume(ctx, volume_number: int, move_originals: bool) -> None:
     """Combine CBZ files into a volume cbz."""
     try:
         check_if_project_initialized()
@@ -82,8 +82,10 @@ def build_volume(volume_number: int, move_originals: bool) -> None:
         click.echo(str(e))
         return
 
-    extract_cbz_and_rename_images(CBZ_DIR, output_directory_schema, volume_number,
-                                  series_name, writer_name, move_originals)
+    logger = create_logger('build_volume', verbose=ctx.obj['VERBOSE'], log_file=LOG_FILE)
+
+    run_build_volume(CBZ_DIR, output_directory_schema, volume_number,
+                 series_name, writer_name, move_originals, logger)
 
 
 if __name__ == '__main__':

@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 CONFIG_FILE = 'config.xml'
+LOG_FILE = 'cbz_editor.log'
 logger = logging.getLogger(__name__)
 
 def load_config() -> Tuple[str, str, str]:

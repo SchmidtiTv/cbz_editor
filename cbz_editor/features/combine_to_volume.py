@@ -1,20 +1,23 @@
 import os
 import shutil
-import logging
 import zipfile
 from typing import List, Tuple
 from xml.etree.ElementTree import Element, SubElement, tostring
 
+import click
 from tqdm import tqdm
 
-from .utils import create_directory, CBZ_DIR, TEMP_DIR
+from cbz_editor.logger.logger import Logger
+from cbz_editor.utils import create_directory, TEMP_DIR
 
-logger = logging.getLogger(__name__)
+logger: Logger
 
 
-def extract_cbz_and_rename_images(cbz_directory: str, output_directory: str, volume_number: int,
-                                  series_name: str, writer_name: str, move_originals: bool) -> None:
+def build_volume(cbz_directory: str, output_directory: str, volume_number: int,
+                 series_name: str, writer_name: str, move_originals: bool, parent_logger: Logger) -> None:
     """Extract CBZ files, rename images, and create ComicInfo.xml and combined CBZ."""
+    global logger
+    logger = parent_logger
 
     output_directory_folder = output_directory.replace("%d", str(volume_number))
     output_directory = os.path.join(os.curdir, output_directory_folder)
@@ -117,10 +120,11 @@ def create_combined_cbz(output_directory: str, cbz_filename: str) -> None:
                     continue
                 if not (file.lower().endswith(('.jpg', '.jpeg')) or file == 'ComicInfo.xml'):
                     continue
-                arcname = os.path.relpath(file_path, start=output_directory)
-                cbz_file.write(file_path, arcname)
+                arc_name = os.path.relpath(file_path, start=output_directory)
+                cbz_file.write(file_path, arc_name)
+
     logger.info(f"Combined CBZ file created: {cbz_path}")
-    print(f"Finished combining CBZs: {cbz_path}")
+    click.echo(f"Finished combining CBZs: {cbz_path}")
 
 
 def move_to_temp_folder(cbz_files: List[str], title_jpg_path: str, p_images: List[str],

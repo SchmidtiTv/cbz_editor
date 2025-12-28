@@ -5,6 +5,7 @@ A CLI tool to batch-rename, organize, and tag CBZ volumes with `ComicInfo.xml` m
 ## Quick Start
 
 1. Install:
+
 ```bash
 git clone https://github.com/SchmidtiTv/cbz_editor
 cd cbz_editor
@@ -12,18 +13,20 @@ pip install -e .
 ```
 
 2. Setup:
+
 ```bash
 cbz-editor init
 ```
-Creates folders and stores your Series/Writer info in `config.xml`.
+
+Creates folders and stores your Series/Writer info and the Schema for the Output Folders in `config.xml`.
 
 3. Run:
-Put chapter `.cbz` files and optional images (e.g., `title.jpg`, `p(n).jpg`) into the `cbz` folder, then:
+   Put chapter `.cbz` files and optional images (e.g., `title.jpg`, `p(n).jpg`) into the `cbz` folder, then:
+
 ```bash
-cbz-editor process 1 --output-dir "Volume-1" --move-originals
+cbz-editor build_volume 1 --move-originals
 ```
 
-- `--output-dir` is where numbered images and the final `Volume_1.cbz` are written.
 - `--move-originals` moves the source `.cbz` and extra images into `temp/Volume_1` after processing.
 
 ---
@@ -41,29 +44,15 @@ cbz-editor process 1 --output-dir "Volume-1" --move-originals
 
 - Python 3.8+
 - Runtime dependencies are installed via `setup.py`:
-  - `click` (CLI)
-  - `tqdm` (progress bars)
+    - `click` (CLI)
+    - `tqdm` (progress bars)
 
 ## Project Structure
 
-```
-cbz_editor/
-  cbz_editor.py          # shim that forwards to the CLI
-  cbz_editor/            # package
-    __init__.py
-    cli.py               # click-based CLI (init, process)
-    config.py            # config.xml read/write
-    processing.py        # extract, rename, bundle, metadata
-    utils.py             # directory helpers/constants
-setup.py                 # packaging & console_script
-README.md
-LICENSE
-```
-
 - Working folders created/used:
-  - `cbz/`   — drop your raw `.cbz` and optional images here
-  - `temp/`  — originals archived after processing when `--move-originals` is used
-  - `config.xml` — stores series metadata
+    - `cbz/`   — drop your raw `.cbz` and optional images here
+    - `temp/`  — originals archived after processing when `--move-originals` is used
+    - `config.xml` — stores series metadata
 
 ## License
 
