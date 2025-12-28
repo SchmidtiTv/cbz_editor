@@ -5,7 +5,7 @@
 - [ ] Add logging configuration to CLI — Currently only logs to file; add optional --verbose/--quiet flags for user feedback.
 - [ ] Handle edge cases in image renaming — Support PNG/WebP, nested folder structures, and duplicate filenames gracefully.
 - [ ] Improve Config Management — Add commands to view/edit config.xml from CLI (e.g., cbz-editor config set series "New Series").
-- [ ] Make '--output-dir' default configurable — Allow setting a default output directory in config.xml to avoid specifying each time.
+- [x] Make '--output-dir' default configurable — Allow setting a default output directory in config.xml to avoid specifying each time.
 
 ## Medium-Priority Features
 - [ ] Support batch processing multiple volumes — Process volumes 1–N in a single command with --volumes 1-5.

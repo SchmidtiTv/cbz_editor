@@ -1,7 +1,7 @@
 import click
 
+from cbz_editor.features.combine_volume import VolumeBuilder
 from .logger.create_logger import create_logger
-from .features.combine_to_volume import build_volume as run_build_volume
 from .utils import create_directory, CBZ_DIR, TEMP_DIR, check_if_project_initialized
 from .config import save_config, load_config, LOG_FILE
 
@@ -83,9 +83,9 @@ def build_volume(ctx, volume_number: int, move_originals: bool) -> None:
         return
 
     logger = create_logger('build_volume', verbose=ctx.obj['VERBOSE'], log_file=LOG_FILE)
-
-    run_build_volume(CBZ_DIR, output_directory_schema, volume_number,
-                 series_name, writer_name, move_originals, logger)
+    builder = VolumeBuilder(CBZ_DIR, output_directory_schema, volume_number,
+                            series_name, writer_name, move_originals, logger)
+    builder.build()
 
 
 if __name__ == '__main__':
