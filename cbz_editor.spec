@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['.\cbz_editor.py'],
+    ['cbz_editor.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='cbz-editor',
+    name='cbz_editor',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

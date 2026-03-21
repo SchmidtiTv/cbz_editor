@@ -1,9 +1,23 @@
-import click
+import rich_click as click  # drop-in, --help is now pretty
+from rich.console import Console
+from rich.prompt import Prompt
+from rich.panel import Panel
+from rich.text import Text
 
 from cbz_editor.features.combine_volume import VolumeBuilder
 from .logger.create_logger import create_logger
 from .utils import create_directory, CBZ_DIR, TEMP_DIR, check_if_project_initialized
 from .config import save_config, load_config, LOG_FILE
+
+# Two consoles — stdout for normal output, stderr for errors
+console = Console()
+err_console = Console(stderr=True)
+
+# Optional: configure rich-click styling
+click.rich_click.STYLE_OPTION = "bold cyan"
+click.rich_click.STYLE_SWITCH = "bold green"
+click.rich_click.STYLE_METAVAR = "dim"
+click.rich_click.USE_RICH_MARKUP = True  # lets you use [bold]...[/bold] in help strings
 
 
 @click.group()
@@ -18,49 +32,58 @@ def cli(ctx, verbose) -> None:
 @cli.command()
 @click.option('--series', help="The name of the series", required=False)
 @click.option('--writer', help="The writer's name", required=False)
-@click.option('--output-directory-schema', help="Output directory template (use `%d` for volume number)",
-              required=False)
-def init(series: str, writer: str) -> None:
+@click.option('--output-directory-schema',
+              help="Output directory template (use `%d` for volume number)", required=False)
+def init(series: str, writer: str, output_directory_schema: str) -> None:
     """Initialize a new CBZ project."""
     try:
         check_if_project_initialized()
-        click.echo("Project is already initialized.", err=True)
+        err_console.print("[yellow]⚠ Project is already initialized.[/yellow]")
         return
     except FileNotFoundError:
-        # Continue with initialization
         pass
     except PermissionError:
-        click.echo("Permission denied", err=True)
+        err_console.print("[red]✗ Permission denied.[/red]")
         return
 
     create_directory(CBZ_DIR)
     create_directory(TEMP_DIR)
 
-    series_name = series or click.prompt("Enter the series name")
-    writer_name = writer or click.prompt("Enter the writer's name (optional)", default="", show_default=False)
+    series_name = series or Prompt.ask("[cyan]Series name[/cyan]")
+    writer_name = writer if writer is not None else Prompt.ask(
+        "[cyan]Writer's name[/cyan] [dim](optional)[/dim]", default=""
+    )
 
-    while True:
-        output_directory_schema = click.prompt(
-            "Output directory template (use `%d` where the volume number should be)",
-            default="Volume_%d", show_default=True)
-        if "%d" in output_directory_schema:
-            break
-        else:
-            click.echo("The output directory template must include `%d` for the volume number.", err=True)
+    if not output_directory_schema or "%d" not in output_directory_schema:
+        if output_directory_schema and "%d" not in output_directory_schema:
+            err_console.print("[red]✗ Output directory template must include [bold]%d[/bold] for the volume number.[/red]")
+
+        while True:
+            output_directory_schema = Prompt.ask(
+                "[cyan]Output directory template[/cyan] [dim](use %d for volume number)[/dim]",
+                default="Volume_%d"
+            )
+            if "%d" in output_directory_schema:
+                break
+            err_console.print("[red]✗ Template must include [bold]%d[/bold].[/red]")
 
     try:
         save_config(series_name, writer_name, output_directory_schema)
     except PermissionError:
-        click.echo("Permission denied", err=True)
+        err_console.print("[red]✗ Permission denied.[/red]")
         return
     except FileNotFoundError:
-        click.echo("File not found", err=True)
+        err_console.print("[red]✗ File not found.[/red]")
         return
     except Exception as e:
-        click.echo(f"An error occurred: {e}", err=True)
+        err_console.print(f"[red]✗ An error occurred:[/red] {e}")
         return
 
-    click.echo("CBZ project initialized.")
+    console.print(Panel(
+        Text("✓ CBZ project initialized.", style="bold green"),
+        border_style="green",
+        expand=False
+    ))
 
 
 @cli.command()
@@ -73,13 +96,13 @@ def build_volume(ctx, volume_number: int, move_originals: bool) -> None:
     try:
         check_if_project_initialized()
     except FileNotFoundError as e:
-        click.echo(str(e))
+        err_console.print(f"[red]✗[/red] {e}")
         return
 
     try:
         series_name, writer_name, output_directory_schema = load_config()
     except FileNotFoundError as e:
-        click.echo(str(e))
+        err_console.print(f"[red]✗[/red] {e}")
         return
 
     logger = create_logger('build_volume', verbose=ctx.obj['VERBOSE'], log_file=LOG_FILE)
